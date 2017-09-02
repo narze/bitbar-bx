@@ -36,6 +36,8 @@ def output(d)
     "Sell orders (Asks) @ #{asks['highbid']} #{secondary}",
     "Volume : #{asks['volume']} #{secondary}",
     "Total : #{asks['total']} orders",
+    "---",
+    "Go to bx.in.th | href=https://bx.in.th color=black",
   ]
 
   [
