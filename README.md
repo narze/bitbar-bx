@@ -7,7 +7,7 @@
 
 ## Instructions
 - Get [BitBar](https://getbitbar.com)
-- Download <a href="bitbar://openPlugin?title=BX&src=https://github.com/narze/bitbar-bx/raw/master/bx_in_th.15s.rb">BX plugin</a>
+- Download <a href="bitbar://openPlugin?title=BX&src=https://github.com/narze/bitbar-bx/raw/master/bx_in_th.15s.rb">BX plugin</a> `bitbar://openPlugin?title=BX&src=https://github.com/narze/bitbar-bx/raw/master/bx_in_th.15s.rb`
 - Change `PAIRING_ID` in script file to your preferred currency pairing
 
 ## Todo
