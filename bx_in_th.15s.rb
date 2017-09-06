@@ -88,7 +88,7 @@ def load_settings
 end
 
 def settings_file
-  File.join(File.dirname(__FILE__), "bx_in_th.conf")
+  File.join(File.dirname(__FILE__), ".bx_in_th.conf")
 end
 
 begin
