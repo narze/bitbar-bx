@@ -62,7 +62,7 @@ def output(d)
     "Total : #{asks['total']} orders",
     "---",
     "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false",
-    "Go to bx.in.th | href=https://bx.in.th color=black",
+    "Go to bx.in.th | href=https://bx.in.th",
   ]
 
   [
