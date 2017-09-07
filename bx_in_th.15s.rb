@@ -9,6 +9,10 @@ PAIRINGS = JSON.parse('{"1":{"pairing_id":1,"primary_currency":"THB","secondary_
 DEFAULT_PAIRING_ID = 26 # THB-OMG
 
 def run
+  # TODO: Remove this line
+  # More info: https://github.com/narze/bitbar-bx/pull/1
+  rename_old_settings_file
+
   settings = load_settings
   pairing_id = settings['pairing_id'] || DEFAULT_PAIRING_ID
 
@@ -87,8 +91,22 @@ def load_settings
   end
 end
 
-def settings_file
+# TODO: Remove this method
+# More info: https://github.com/narze/bitbar-bx/pull/1
+def rename_old_settings_file
+  if File.exist? old_settings_file
+    File.rename(old_settings_file, settings_file)
+  end
+end
+
+# TODO: Remove this method
+# More info: https://github.com/narze/bitbar-bx/pull/1
+def old_settings_file
   File.join(File.dirname(__FILE__), "bx_in_th.conf")
+end
+
+def settings_file
+  File.join(File.dirname(__FILE__), ".bx_in_th.conf")
 end
 
 begin
