@@ -7,6 +7,7 @@ require 'json'
 PAIRINGS = JSON.parse('{"1":{"pairing_id":1,"primary_currency":"THB","secondary_currency":"BTC"},"21":{"pairing_id":21,"primary_currency":"THB","secondary_currency":"ETH"},"22":{"pairing_id":22,"primary_currency":"THB","secondary_currency":"DAS"},"23":{"pairing_id":23,"primary_currency":"THB","secondary_currency":"REP"},"20":{"pairing_id":20,"primary_currency":"BTC","secondary_currency":"ETH"},"4":{"pairing_id":4,"primary_currency":"BTC","secondary_currency":"DOG"},"6":{"pairing_id":6,"primary_currency":"BTC","secondary_currency":"FTC"},"24":{"pairing_id":24,"primary_currency":"THB","secondary_currency":"GNO"},"13":{"pairing_id":13,"primary_currency":"BTC","secondary_currency":"HYP"},"2":{"pairing_id":2,"primary_currency":"BTC","secondary_currency":"LTC"},"3":{"pairing_id":3,"primary_currency":"BTC","secondary_currency":"NMC"},"26":{"pairing_id":26,"primary_currency":"THB","secondary_currency":"OMG"},"14":{"pairing_id":14,"primary_currency":"BTC","secondary_currency":"PND"},"5":{"pairing_id":5,"primary_currency":"BTC","secondary_currency":"PPC"},"19":{"pairing_id":19,"primary_currency":"BTC","secondary_currency":"QRK"},"15":{"pairing_id":15,"primary_currency":"BTC","secondary_currency":"XCN"},"7":{"pairing_id":7,"primary_currency":"BTC","secondary_currency":"XPM"},"17":{"pairing_id":17,"primary_currency":"BTC","secondary_currency":"XPY"},"25":{"pairing_id":25,"primary_currency":"THB","secondary_currency":"XRP"},"8":{"pairing_id":8,"primary_currency":"BTC","secondary_currency":"ZEC"}}').freeze
 
 DEFAULT_PAIRING_ID = 26 # THB-OMG
+DEFAULT_MODE = 'default'
 
 def run
   # TODO: Remove this line
@@ -15,6 +16,7 @@ def run
 
   settings = load_settings
   settings['pairing_id'] ||= DEFAULT_PAIRING_ID.to_s
+  settings['mode'] ||= DEFAULT_MODE
   current_pairing = PAIRINGS[settings['pairing_id']].values_at('primary_currency', 'secondary_currency').join('-')
 
   case ARGV[0]
@@ -30,6 +32,8 @@ def run
     else
       notification('Error', 'Invalid pairing')
     end
+  when 'set_mode'
+    settings['mode'] = ARGV[1]
   else
     # Do nothing for now
   end
@@ -37,13 +41,13 @@ def run
   url = 'https://bx.in.th/api/'
   response = Net::HTTP.get(URI(url))
   data = JSON.parse(response)[settings['pairing_id']]
-  output(data, previous_price: settings['previous_price'])
+  output(data, previous_price: settings['previous_price'], mode: settings['mode'])
 
   settings['previous_price'] = data['last_price']
   save_settings(settings)
 end
 
-def output(d, previous_price: nil)
+def output(d, previous_price: nil, mode: DEFAULT_MODE)
   primary = d['primary_currency']
   secondary = d['secondary_currency']
   last_price = d['last_price']
@@ -61,7 +65,14 @@ def output(d, previous_price: nil)
   end
 
   change_percent = "#{change > 0 ? '+' : ''}#{change}%"
-  summary = "#{primary}-#{secondary} @ #{r(last_price)}#{direction} (#{change_percent})"
+  summary = {
+    default: "#{primary}-#{secondary} @ #{r(last_price)}#{direction} (#{change_percent})",
+    mini: "#{secondary} #{r(last_price)}#{direction}",
+  }
+  mode_change = {
+    default: "Mini Mode | bash='#{__FILE__}' param1=set_mode param2=mini terminal=false refresh=true",
+    mini: "Default Mode | bash='#{__FILE__}' param1=set_mode param2=default terminal=false refresh=true",
+  }
   details = [
     "---",
     "24h volume : #{r(d['volume_24hours'])} #{secondary}",
@@ -75,13 +86,14 @@ def output(d, previous_price: nil)
     "Volume : #{r(asks['volume'])} #{secondary}",
     "Total : #{c(asks['total'])} orders",
     "---",
+    mode_change[mode.to_sym],
     "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false refresh=true",
     "Refresh | bash='/usr/bin/open' param1='bitbar://refreshPlugin?name=bx_in_th.*?.rb' terminal=false",
     "Go to bx.in.th | href=https://bx.in.th",
   ]
 
   [
-    summary,
+    summary[mode.to_sym],
     *details,
   ].each(&method(:puts))
 end
