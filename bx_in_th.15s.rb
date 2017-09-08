@@ -55,11 +55,11 @@ def output(d)
     "---",
     "Buy orders (Bids) @ #{r(bids['highbid'])} #{secondary}",
     "Volume : #{r(bids['volume'])} #{secondary}",
-    "Total : #{bids['total']} orders",
+    "Total : #{c(bids['total'])} orders",
     "---",
     "Sell orders (Asks) @ #{r(asks['highbid'])} #{secondary}",
     "Volume : #{r(asks['volume'])} #{secondary}",
-    "Total : #{asks['total']} orders",
+    "Total : #{c(asks['total'])} orders",
     "---",
     "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false",
     "Refresh | bash='/usr/bin/open' param1='bitbar://refreshPlugin?name=bx_in_th.*?.rb' terminal=false",
@@ -111,7 +111,11 @@ def settings_file
 end
 
 def r(number)
-  "%g" % number.round(2)
+  c("%g" % number.round(2))
+end
+
+def c(number)
+  number.to_s.reverse.scan(/\d{3}|.+/).join(",").reverse
 end
 
 begin
