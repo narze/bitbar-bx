@@ -1,6 +1,9 @@
 # BX.in.th plugin for BitBar
 
-![Screenshot](https://i.imgur.com/xpMuCZC.png)
+![Screenshot](https://i.imgur.com/xc1tZED.png)
+
+### Mini Mode
+![Screenshot](https://i.imgur.com/5b8KSaz.png)
 
 ## Features
 - Display one pairing market data (Default to THB-OMG 🚀)
