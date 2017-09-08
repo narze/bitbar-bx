@@ -112,11 +112,15 @@ def settings_file
 end
 
 def r(number)
-  c("%g" % number.round(2))
+  c("%0.02f" % number)
 end
 
 def c(number)
-  number.to_s.reverse.scan(/\d{3}|.+/).join(",").reverse
+  left, right = number.to_s.split('.')
+  left.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/) do |digits|
+    "#{digits},"
+  end
+  [left, right].compact.join('.')
 end
 
 begin
