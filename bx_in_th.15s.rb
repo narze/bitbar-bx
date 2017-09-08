@@ -62,6 +62,7 @@ def output(d)
     "Total : #{asks['total']} orders",
     "---",
     "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false",
+    "Refresh | bash='/usr/bin/open' param1='bitbar://refreshPlugin?name=bx_in_th.*?.rb' terminal=false",
     "Go to bx.in.th | href=https://bx.in.th",
   ]
 
