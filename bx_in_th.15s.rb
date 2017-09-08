@@ -42,7 +42,7 @@ end
 def output(d)
   primary = d['primary_currency']
   secondary = d['secondary_currency']
-  last_price = d['last_price']
+  last_price = r(d['last_price'])
   change = d['change']
   order_book = d['orderbook']
   bids = order_book['bids']
@@ -51,14 +51,14 @@ def output(d)
   summary = "#{primary}-#{secondary} @ #{last_price} (#{change}%)"
   details = [
     "---",
-    "24h volume : #{d['volume_24hours']} #{secondary}",
+    "24h volume : #{r(d['volume_24hours'])} #{secondary}",
     "---",
-    "Buy orders (Bids) @ #{bids['highbid']} #{secondary}",
-    "Volume : #{bids['volume']} #{secondary}",
+    "Buy orders (Bids) @ #{r(bids['highbid'])} #{secondary}",
+    "Volume : #{r(bids['volume'])} #{secondary}",
     "Total : #{bids['total']} orders",
     "---",
-    "Sell orders (Asks) @ #{asks['highbid']} #{secondary}",
-    "Volume : #{asks['volume']} #{secondary}",
+    "Sell orders (Asks) @ #{r(asks['highbid'])} #{secondary}",
+    "Volume : #{r(asks['volume'])} #{secondary}",
     "Total : #{asks['total']} orders",
     "---",
     "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false",
@@ -107,6 +107,10 @@ end
 
 def settings_file
   File.join(File.dirname(__FILE__), ".bx_in_th.conf")
+end
+
+def r(number)
+  "%g" % number.round(2)
 end
 
 begin
