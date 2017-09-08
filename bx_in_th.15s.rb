@@ -88,8 +88,11 @@ def output(d, previous_price: nil, mode: DEFAULT_MODE)
     "---",
     mode_change[mode.to_sym],
     "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false refresh=true",
-    "Refresh | bash='/usr/bin/open' param1='bitbar://refreshPlugin?name=bx_in_th.*?.rb' terminal=false",
+    "Refresh | href=bitbar://refreshPlugin?name=bx_in_th.*?.rb",
     "Go to bx.in.th | href=https://bx.in.th",
+    "---",
+    "Download update | href=bitbar://openPlugin?title=BX&src=https://github.com/narze/bitbar-bx/raw/master/bx_in_th.15s.rb",
+    "Go to Github | href=https://github.com/narze/bitbar-bx",
   ]
 
   [
