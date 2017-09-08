@@ -15,18 +15,19 @@ def run
 
   settings = load_settings
   pairing_id = settings['pairing_id'] || DEFAULT_PAIRING_ID
+  current_pairing = PAIRINGS[pairing_id.to_s].values_at('primary_currency', 'secondary_currency').join('-')
 
   case ARGV[0]
   when 'set_pairing'
-    pairing_input = prompt("Set pairing in XXX-YYY eg. THB-OMG", "THB-OMG")
-    primary, secondary = pairing_input.split('-')
+    pairing_input = prompt("Set pairing in XXX-YYY eg. THB-OMG", current_pairing)
+    primary, secondary = pairing_input.upcase.split('-')
     pairing = PAIRINGS.detect { |_id, p| p['primary_currency'] == primary && p['secondary_currency'] == secondary }
 
     if pairing
       pairing_id = pairing[0]
       notification('Pairing changed', "Pairing changed to #{primary}-#{secondary}")
     else
-      notification('Error', 'Wrong pairing, using default pairing')
+      notification('Error', 'Invalid pairing')
     end
   else
     # Do nothing for now
@@ -61,7 +62,7 @@ def output(d)
     "Volume : #{r(asks['volume'])} #{secondary}",
     "Total : #{c(asks['total'])} orders",
     "---",
-    "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false",
+    "Change pairing | bash='#{__FILE__}' param1=set_pairing terminal=false refresh=true",
     "Refresh | bash='/usr/bin/open' param1='bitbar://refreshPlugin?name=bx_in_th.*?.rb' terminal=false",
     "Go to bx.in.th | href=https://bx.in.th",
   ]
