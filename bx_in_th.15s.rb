@@ -14,8 +14,8 @@ def run
   rename_old_settings_file
 
   settings = load_settings
-  pairing_id = settings['pairing_id'] || DEFAULT_PAIRING_ID
-  current_pairing = PAIRINGS[pairing_id.to_s].values_at('primary_currency', 'secondary_currency').join('-')
+  settings['pairing_id'] ||= DEFAULT_PAIRING_ID.to_s
+  current_pairing = PAIRINGS[settings['pairing_id']].values_at('primary_currency', 'secondary_currency').join('-')
 
   case ARGV[0]
   when 'set_pairing'
@@ -24,7 +24,8 @@ def run
     pairing = PAIRINGS.detect { |_id, p| p['primary_currency'] == primary && p['secondary_currency'] == secondary }
 
     if pairing
-      pairing_id = pairing[0]
+      settings['pairing_id'] = pairing[0]
+      settings['previous_price'] = nil
       notification('Pairing changed', "Pairing changed to #{primary}-#{secondary}")
     else
       notification('Error', 'Invalid pairing')
@@ -35,24 +36,36 @@ def run
 
   url = 'https://bx.in.th/api/'
   response = Net::HTTP.get(URI(url))
-  data = JSON.parse(response)[pairing_id.to_s]
-  output(data)
-  save_settings(pairing_id: pairing_id)
+  data = JSON.parse(response)[settings['pairing_id']]
+  output(data, previous_price: settings['previous_price'])
+
+  settings['previous_price'] = data['last_price']
+  save_settings(settings)
 end
 
-def output(d)
+def output(d, previous_price: nil)
   primary = d['primary_currency']
   secondary = d['secondary_currency']
-  last_price = r(d['last_price'])
+  last_price = d['last_price']
   change = d['change']
   order_book = d['orderbook']
   bids = order_book['bids']
   asks = order_book['asks']
 
-  summary = "#{primary}-#{secondary} @ #{last_price} (#{change}%)"
+  if previous_price && previous_price > last_price
+    direction = ' ⬇︎'
+  elsif previous_price && previous_price < last_price
+    direction = ' ⬆︎'
+  else
+    direction = ''
+  end
+
+  change_percent = "#{change > 0 ? '+' : ''}#{change}%"
+  summary = "#{primary}-#{secondary} @ #{r(last_price)}#{direction} (#{change_percent})"
   details = [
     "---",
     "24h volume : #{r(d['volume_24hours'])} #{secondary}",
+    "Change : #{change_percent}",
     "---",
     "Buy orders (Bids) @ #{r(bids['highbid'])} #{secondary}",
     "Volume : #{r(bids['volume'])} #{secondary}",
