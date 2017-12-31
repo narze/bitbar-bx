@@ -10,10 +10,6 @@ DEFAULT_PAIRING_ID = 26 # THB-OMG
 DEFAULT_MODE = 'default'
 
 def run
-  # TODO: Remove this line
-  # More info: https://github.com/narze/bitbar-bx/pull/1
-  rename_old_settings_file
-
   settings = load_settings
   settings['pairing_id'] ||= DEFAULT_PAIRING_ID.to_s
   settings['mode'] ||= DEFAULT_MODE
@@ -119,20 +115,6 @@ def load_settings
   else
     {}
   end
-end
-
-# TODO: Remove this method
-# More info: https://github.com/narze/bitbar-bx/pull/1
-def rename_old_settings_file
-  if File.exist? old_settings_file
-    File.rename(old_settings_file, settings_file)
-  end
-end
-
-# TODO: Remove this method
-# More info: https://github.com/narze/bitbar-bx/pull/1
-def old_settings_file
-  File.join(File.dirname(__FILE__), "bx_in_th.conf")
 end
 
 def settings_file
