@@ -36,7 +36,14 @@ def run
 
   url = 'https://bx.in.th/api/'
   response = Net::HTTP.get(URI(url))
-  data = JSON.parse(response)[settings['pairing_id']]
+
+  begin
+    data = JSON.parse(response)[settings['pairing_id']]
+  rescue Exception => _
+    puts "Error : Bad response from bx API. Maybe server is down"
+    return
+  end
+
   output(data, previous_price: settings['previous_price'], mode: settings['mode'])
 
   settings['previous_price'] = data['last_price']
