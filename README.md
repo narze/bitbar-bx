@@ -2,6 +2,12 @@
 
 ![Screenshot](https://i.imgur.com/xc1tZED.png)
 
+## Discontinued
+
+Since bx is shutting down, this repo will be archived.
+
+![RIP](https://i.imgur.com/mRmxRJg.png)
+
 ### Mini Mode
 ![Screenshot](https://i.imgur.com/5b8KSaz.png)
 
